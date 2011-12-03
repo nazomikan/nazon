@@ -120,7 +120,7 @@
         var origContext = context;
     
         if ( context.nodeType !== 1 && context.nodeType !== 9 ) {
-        return [];
+            return [];
         }
       
         if ( !selector || typeof selector !== "string" ) {
@@ -137,7 +137,6 @@
         do {
             chunker.exec( "" );
             m = chunker.exec( soFar );
-    
             if ( m ) {
                 soFar = m[3];
             
@@ -149,24 +148,22 @@
                 }
             }
         } while ( m );
-    
         if ( parts.length > 1 && origPOS.exec( selector ) ) {
-    
+
             if ( parts.length === 2 && Expr.relative[ parts[0] ] ) {
                 set = posProcess( parts[0] + parts[1], context, seed );
-    
             } else {
                 set = Expr.relative[ parts[0] ] ?
                     [ context ] :
                     Sizzle( parts.shift(), context );
-    
+
                 while ( parts.length ) {
                     selector = parts.shift();
-    
+
                     if ( Expr.relative[ selector ] ) {
                         selector += parts.shift();
                     }
-                    
+
                     set = posProcess( selector, set, seed );
                 }
             }
@@ -182,12 +179,13 @@
                     Sizzle.filter( ret.expr, ret.set )[0] :
                     ret.set[0];
             }
-    
+
             if ( context ) {
                 ret = seed ?
                     { expr: parts.pop(), set: makeArray(seed) } :
                     Sizzle.find( parts.pop(), parts.length === 1 && (parts[0] === "~" || parts[0] === "+") && context.parentNode ? context.parentNode : context, contextXML );
-    
+                // ret.expr => :matches(#demo4, #demo5)  / :eq(3) etc..
+                // ret.set  => 
                 set = ret.expr ?
                     Sizzle.filter( ret.expr, ret.set ) :
                     ret.set;
@@ -220,7 +218,7 @@
                 checkSet = parts = [];
             }
         }
-    
+
         if ( !checkSet ) {
             checkSet = set;
         }
@@ -228,7 +226,7 @@
         if ( !checkSet ) {
             Sizzle.error( cur || selector );
         }
-    
+
         if ( toString.call(checkSet) === "[object Array]" ) {
             if ( !prune ) {
                 results.push.apply( results, checkSet );
@@ -328,17 +326,17 @@
             result = [],
             curLoop = set,
             isXMLFilter = set && set[0] && Sizzle.isXML( set[0] );
-    
+
         while ( expr && set.length ) {
             for ( type in Expr.filter ) {
                 if ( (match = Expr.leftMatch[ type ].exec( expr )) != null && match[2] ) {
                     filter = Expr.filter[ type ];
                     left = match[1];
-    
+
                     anyFound = false;
-    
+
                     match.splice(1,1);
-    
+
                     if ( left.substr( left.length - 1 ) === "\\" ) {
                         continue;
                     }
@@ -346,10 +344,9 @@
                     if ( curLoop === result ) {
                         result = [];
                     }
-    
+
                     if ( Expr.preFilter[ type ] ) {
                         match = Expr.preFilter[ type ]( match, curLoop, inplace, result, not, isXMLFilter );
-    
                         if ( !match ) {
                             anyFound = found = true;
     
@@ -357,7 +354,7 @@
                             continue;
                         }
                     }
-    
+
                     if ( match ) {
                         for ( i = 0; (item = curLoop[i]) != null; i++ ) {
                             if ( item ) {
@@ -465,7 +462,9 @@
             ATTR: /\[\s*((?:[\w\u00c0-\uFFFF\-]|\\.)+)\s*(?:(\S?=)\s*(?:(['"])(.*?)\3|(#?(?:[\w\u00c0-\uFFFF\-]|\\.)*)|)|)\s*\]/,
             TAG: /^((?:[\w\u00c0-\uFFFF\*\-]|\\.)+)/,
             CHILD: /:(only|nth|last|first)-child(?:\(\s*(even|odd|(?:[+\-]?\d+|(?:[+\-]?\d*)?n\s*(?:[+\-]\s*\d+)?))\s*\))?/,
-            POS: /:(nth|eq|gt|lt|first|last|even|odd)(?:\((\d*)\))?(?=[^\-]|$)/,
+            //POS: /:(nth|eq|gt|lt|first|last|even|odd)(?:\((\d*)\))?(?=[^\-]|$)/,
+            POS: /:(nth|eq|gt|lt|first|last|even|odd|matches)(?:\((.+)\))?(?=[^\-]|$)/,
+
             PSEUDO: /:((?:[\w\u00c0-\uFFFF\-]|\\.)+)(?:\((['"]?)((?:\([^\)]+\)|[^\(\)]*)+)\2\))?/
         },
     
@@ -831,6 +830,10 @@
     
             eq: function( elem, i, match ) {
                 return match[3] - 0 === i;
+            },
+           
+            matches: function( elem, i, match) {
+                return Sizzle.matchesSelector(elem, match[3]);
             }
         },
         filter: {
@@ -973,46 +976,46 @@
                     value === check || value.substr(0, check.length + 1) === check + "-" :
                     false;
             },
-    
+
             POS: function( elem, match, i, array ) {
                 var name = match[2],
                     filter = Expr.setFilters[ name ];
-    
+
                 if ( filter ) {
                     return filter( elem, i, match, array );
                 }
             }
         }
     };
-    
+
     var origPOS = Expr.match.POS,
         fescape = function(all, num){
             return "\\" + (num - 0 + 1);
         };
-    
+
     for ( var type in Expr.match ) {
         Expr.match[ type ] = new RegExp( Expr.match[ type ].source + (/(?![^\[]*\])(?![^\(]*\))/.source) );
         Expr.leftMatch[ type ] = new RegExp( /(^(?:.|\r|\n)*?)/.source + Expr.match[ type ].source.replace(/\\(\d+)/g, fescape) );
     }
-    
+
     var makeArray = function( array, results ) {
         array = Array.prototype.slice.call( array, 0 );
-    
+
         if ( results ) {
             results.push.apply( results, array );
             return results;
         }
-        
+
         return array;
     };
-    
+
     // Perform a simple check to determine if the browser is capable of
     // converting a NodeList to an array using builtin methods.
     // Also verifies that the returned array holds DOM nodes
     // (which is not the case in the Blackberry browser)
     try {
         Array.prototype.slice.call( document.documentElement.childNodes, 0 )[0].nodeType;
-    
+
     // Provide a fallback method if it does not work
     } catch( e ) {
         makeArray = function( array, results ) {
@@ -1026,7 +1029,7 @@
                 if ( typeof array.length === "number" ) {
                     for ( var l = array.length; i < l; i++ ) {
                         ret.push( array[i] );
-                    }
+                 }
     
                 } else {
                     for ( ; array[i]; i++ ) {
@@ -1438,7 +1441,6 @@
     function dirCheck( dir, cur, doneName, checkSet, nodeCheck, isXML ) {
         for ( var i = 0, l = checkSet.length; i < l; i++ ) {
             var elem = checkSet[i];
-    
             if ( elem ) {
                 var match = false;
                 
@@ -1455,7 +1457,7 @@
                             elem[ expando ] = doneName;
                             elem.sizset = i;
                         }
-    
+
                         if ( typeof cur !== "string" ) {
                             if ( elem === cur ) {
                                 match = true;
@@ -1518,7 +1520,7 @@
         for ( var i = 0, l = root.length; i < l; i++ ) {
             Sizzle( selector, root[i], tmpSet, seed );
         }
-    
+
         return Sizzle.filter( later, tmpSet );
     };
     
