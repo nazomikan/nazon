@@ -1,3 +1,15 @@
+/*!
+ * nazon JavaScript Library v0.1
+ * https://github.com/nazomikan/nazon
+ *
+ * Copyright 2011, nazomikan
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ *
+ * Includes Sizzle.js
+ * http://sizzlejs.com/
+ * Copyright 2011, The Dojo Foundation
+ * Released under the MIT, BSD, and GPL Licenses.
+ */
 (function (win, doc) {
 
     var app = {},
