@@ -36,8 +36,8 @@
         return _modules[nameSpace];
     }
 
-    function _selector (expr) {
-       var items = new Sizzle(expr);
+    function _selector (expr, context) {
+       var items = new Sizzle(expr, context);
        return new NodeWrapper(items);
     }
 
