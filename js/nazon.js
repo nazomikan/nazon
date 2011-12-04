@@ -117,7 +117,7 @@
         addModule   : _addModule,
         get         : _selector,
         create      : _domCreate,
-        actionController: _registController
+        actionController : _registController
     };
 
     /*!

@@ -44,6 +44,10 @@
             <dt><b>Effect API</b></dt>
             <dd>show : nazon.get('li a').show()</dd>
             <dd>hide : nazon.get('li a').hide()</dd>
+            <dt><b>Natural DOM  API</b></dt>
+            <dd>append : nazon.get('ul').append(nazon.create('li', 'demo7', {id : 'demo7'}) /* , Natural DOM or NodeWrapper(nazon.create..) */);</dd>
+            <dd>create : nazon.create('li', 'demo7', {id : 'demo7'})</dd>
+            <dd>is: nazon.get('ul').is(expr) // expr: ul => true / expr: a => false</dd>
             <dt><b>Debug API</b></dt>
             <dd>debug : nazon.get('li a').dump()</dd>
             <dt><b>Selector API</b></dt>
