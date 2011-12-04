@@ -15,8 +15,8 @@
 
     <nav>
         <ul>
-            <li><a href="javascript:void(0)">demo1</a></li>
-            <li><a href="javascript:void(0)">demo2</a></li>
+            <li><a href="javascript:nazon.get('li:eq(0) a').hide(); void(0)">demo1</a> : hide this Element => nazon.get('li:eq(0) a').hide()</li>
+            <li><a href="javascript:nazon.get('li:eq(0) a').show(); void(0)">demo2</a> : show demo1  =>  nazon.get('eq(0) a').show()</li>
             <li><a href="javascript:void(0)">demo3</a></li>
             <li id="demo4"><a href="javascript:void(0)">demo4</a></li>
             <li id="demo5"><a href="javascript:void(0)">demo5</a></li>
@@ -47,10 +47,10 @@
             <dt><b>Debug API</b></dt>
             <dd>debug : nazon.get('li a').dump()</dd>
             <dt><b>Selector API</b></dt>
-            <dd>CSS1 is full Support : nazon.get('li a')</dd>
-            <dd>CSS2 is full Support : nazon.get('li:not(#demo4)')</dd>
+            <dd>CSS1 is full Support : nazon.get('li')</dd>
+            <dd>CSS2 is full Support : nazon.get('li a')</dd>
             <dd>CSS3 is full Support : nazon.get('li:not(#demo4)')</dd>
-            <dd>CSS4 is only (:mutches) Support : nazon.get('ul :matches(#demo4, #demo5) a')</dd>
+            <dd>CSS4 is only (:matches) Support : nazon.get('ul :matches(#demo4, #demo5) a')</dd>
         </dl>
         <h2>nazon selector engine</h2>
         <p>include Sizzle</p>
