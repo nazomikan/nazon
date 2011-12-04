@@ -201,31 +201,30 @@
                 set = ret.expr ?
                     Sizzle.filter( ret.expr, ret.set ) :
                     ret.set;
-    
+
                 if ( parts.length > 0 ) {
                     checkSet = makeArray( set );
-    
                 } else {
                     prune = false;
                 }
-    
+
                 while ( parts.length ) {
                     cur = parts.pop();
                     pop = cur;
-    
+
                     if ( !Expr.relative[ cur ] ) {
                         cur = "";
                     } else {
                         pop = parts.pop();
                     }
-    
+
                     if ( pop == null ) {
                         pop = context;
                     }
-    
+
                     Expr.relative[ cur ]( checkSet, pop, contextXML );
                 }
-    
+
             } else {
                 checkSet = parts = [];
             }
@@ -234,7 +233,7 @@
         if ( !checkSet ) {
             checkSet = set;
         }
-    
+
         if ( !checkSet ) {
             Sizzle.error( cur || selector );
         }
@@ -242,14 +241,14 @@
         if ( toString.call(checkSet) === "[object Array]" ) {
             if ( !prune ) {
                 results.push.apply( results, checkSet );
-    
+
             } else if ( context && context.nodeType === 1 ) {
                 for ( i = 0; checkSet[i] != null; i++ ) {
                     if ( checkSet[i] && (checkSet[i] === true || checkSet[i].nodeType === 1 && Sizzle.contains(context, checkSet[i])) ) {
                         results.push( set[i] );
                     }
                 }
-    
+
             } else {
                 for ( i = 0; checkSet[i] != null; i++ ) {
                     if ( checkSet[i] && checkSet[i].nodeType === 1 ) {
@@ -257,19 +256,18 @@
                     }
                 }
             }
-    
         } else {
             makeArray( checkSet, results );
         }
-    
+
         if ( extra ) {
             Sizzle( extra, origContext, results, seed );
             Sizzle.uniqueSort( results );
         }
-    
+
         return results;
     };
-    
+
     Sizzle.uniqueSort = function( results ) {
         if ( sortOrder ) {
             hasDuplicate = baseHasDuplicate;
