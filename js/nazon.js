@@ -45,6 +45,15 @@
         this.items = items;
     }
 
+    function _domCreate(tag, content, attr){
+        var prop, element = doc.createElement(tag);
+        for (prop in attr) {
+            element.setAttribute(prop, attr[prop]);
+        }
+        element.appendChild(doc.createTextNode(content));
+        return new NodeWrapper([element]);
+    }
+
     NodeWrapper.prototype = (function () {
         function show () {
             var i, l, items = this.items;
@@ -58,6 +67,16 @@
             var i, l, items = this.items;
             for (i = 0, l = items.length; i < l; i++) {
                 items[i].style.display = 'none';
+            }
+            return this;
+        }
+
+        function append (element) {
+            var i, l, items = this.items, target;
+            target =  ('dump' in element) ? element.dump().pop() : element;
+
+            for (i = 0, l = items.length; i < l; i++) {
+                items[i].appendChild(target.cloneNode(true));
             }
             return this;
         }
@@ -79,7 +98,8 @@
             dump: dump,
             is  : is,
             show: show,
-            hide: hide
+            hide: hide,
+            append: append
         };
     }());
 
@@ -95,6 +115,7 @@
         require     : _require,
         addModule   : _addModule,
         get         : _selector,
+        create      : _domCreate,
         actionController: _registController
     };
 
@@ -144,16 +165,16 @@
             contextXML = Sizzle.isXML( context ),
             parts = [],
             soFar = selector;
-        
+
         // Reset the position of the chunker regexp (start from head)
         do {
             chunker.exec( "" );
             m = chunker.exec( soFar );
             if ( m ) {
                 soFar = m[3];
-            
+
                 parts.push( m[1] );
-            
+
                 if ( m[2] ) {
                     extra = m[3];
                     break;
@@ -179,13 +200,13 @@
                     set = posProcess( selector, set, seed );
                 }
             }
-    
+
         } else {
             // Take a shortcut and set the context if the root selector is an ID
             // (but not if it'll be faster if the inner selector is an ID)
             if ( !seed && parts.length > 1 && context.nodeType === 9 && !contextXML &&
                     Expr.match.ID.test(parts[0]) && !Expr.match.ID.test(parts[parts.length - 1]) ) {
-    
+
                 ret = Sizzle.find( parts.shift(), context, contextXML );
                 context = ret.expr ?
                     Sizzle.filter( ret.expr, ret.set )[0] :
@@ -272,7 +293,6 @@
         if ( sortOrder ) {
             hasDuplicate = baseHasDuplicate;
             results.sort( sortOrder );
-    
             if ( hasDuplicate ) {
                 for ( var i = 1; i < results.length; i++ ) {
                     if ( results[i] === results[ i - 1 ] ) {
@@ -281,36 +301,35 @@
                 }
             }
         }
-    
         return results;
     };
-    
+
     Sizzle.matches = function( expr, set ) {
         return Sizzle( expr, null, null, set );
     };
-    
+
     Sizzle.matchesSelector = function( node, expr ) {
         return Sizzle( expr, null, null, [node] ).length > 0;
     };
-    
+
     Sizzle.find = function( expr, context, isXML ) {
         var set, i, len, match, type, left;
-    
+
         if ( !expr ) {
             return [];
         }
-    
+
         for ( i = 0, len = Expr.order.length; i < len; i++ ) {
             type = Expr.order[i];
-            
+
             if ( (match = Expr.leftMatch[ type ].exec( expr )) ) {
                 left = match[1];
                 match.splice( 1, 1 );
-    
+
                 if ( left.substr( left.length - 1 ) !== "\\" ) {
                     match[1] = (match[1] || "").replace( rBackslash, "" );
                     set = Expr.find[ type ]( match, context, isXML );
-    
+
                     if ( set != null ) {
                         expr = expr.replace( Expr.match[ type ], "" );
                         break;
@@ -318,16 +337,15 @@
                 }
             }
         }
-    
+
         if ( !set ) {
             set = typeof context.getElementsByTagName !== "undefined" ?
                 context.getElementsByTagName( "*" ) :
                 [];
         }
-    
         return { set: set, expr: expr };
     };
-    
+
     Sizzle.filter = function( expr, set, inplace, not ) {
         var match, anyFound,
             type, found, item, filter, left,
@@ -342,15 +360,13 @@
                 if ( (match = Expr.leftMatch[ type ].exec( expr )) != null && match[2] ) {
                     filter = Expr.filter[ type ];
                     left = match[1];
-
                     anyFound = false;
-
                     match.splice(1,1);
 
                     if ( left.substr( left.length - 1 ) === "\\" ) {
                         continue;
                     }
-    
+
                     if ( curLoop === result ) {
                         result = [];
                     }
@@ -359,7 +375,6 @@
                         match = Expr.preFilter[ type ]( match, curLoop, inplace, result, not, isXMLFilter );
                         if ( !match ) {
                             anyFound = found = true;
-    
                         } else if ( match === true ) {
                             continue;
                         }
@@ -370,15 +385,13 @@
                             if ( item ) {
                                 found = filter( item, match, i, curLoop );
                                 pass = not ^ found;
-    
+
                                 if ( inplace && found != null ) {
                                     if ( pass ) {
                                         anyFound = true;
-    
                                     } else {
                                         curLoop[i] = false;
                                     }
-    
                                 } else if ( pass ) {
                                     result.push( item );
                                     anyFound = true;
@@ -386,43 +399,39 @@
                             }
                         }
                     }
-    
+
                     if ( found !== undefined ) {
                         if ( !inplace ) {
                             curLoop = result;
                         }
-    
+
                         expr = expr.replace( Expr.match[ type ], "" );
-    
+
                         if ( !anyFound ) {
                             return [];
                         }
-    
                         break;
                     }
                 }
             }
-    
+
             // Improper expression
             if ( expr === old ) {
                 if ( anyFound == null ) {
                     Sizzle.error( expr );
-    
                 } else {
                     break;
                 }
             }
-    
             old = expr;
         }
-    
         return curLoop;
     };
-    
+
     Sizzle.error = function( msg ) {
         throw new Error( "Syntax error, unrecognized expression: " + msg );
     };
-    
+
     /**
      * Utility function for retreiving the text value of an array of DOM nodes
      * @param {Array|Element} elem
@@ -431,7 +440,7 @@
         var i, node,
             nodeType = elem.nodeType,
             ret = "";
-    
+
         if ( nodeType ) {
             if ( nodeType === 1 || nodeType === 9 ) {
                 // Use textContent || innerText for elements
@@ -450,7 +459,6 @@
                 return elem.nodeValue;
             }
         } else {
-    
             // If no nodeType, this is expected to be an array
             for ( i = 0; (node = elem[i]); i++ ) {
                 // Do not traverse comment nodes
@@ -461,10 +469,9 @@
         }
         return ret;
     };
-    
+
     var Expr = Sizzle.selectors = {
         order: [ "ID", "NAME", "TAG" ],
-    
         match: {
             ID: /#((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
             CLASS: /\.((?:[\w\u00c0-\uFFFF\-]|\\.)+)/,
