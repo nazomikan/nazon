@@ -71,12 +71,13 @@
             return this;
         }
 
-        function append (element) {
-            var i, l, items = this.items, target;
-            target =  ('dump' in element) ? element.dump().pop() : element;
-
-            for (i = 0, l = items.length; i < l; i++) {
-                items[i].appendChild(target.cloneNode(true));
+        function append (/* element, element, ele... */) {
+            var i, l, j, m, items = this.items, elements = Array.prototype.slice.call(arguments), target;
+            for (i = 0, l = elements.length; i < l; i++) {
+                target = ('dump' in elements[i]) ? elements[i].dump().pop() : elements[i];
+                for (j = 0, m = items.length; j < m; j++) {
+                    items[j].appendChild(target.cloneNode(1));
+                }
             }
             return this;
         }
