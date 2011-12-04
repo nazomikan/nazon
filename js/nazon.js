@@ -51,6 +51,7 @@
             for (i = 0, l = items.length; i < l; i++) {
                 items[i].style.display = '';
             }
+            return this;
         }
 
         function hide () {
@@ -58,6 +59,16 @@
             for (i = 0, l = items.length; i < l; i++) {
                 items[i].style.display = 'none';
             }
+            return this;
+        }
+
+        function is(expr) {
+            var i, l, items = this.items, result;
+            for (i = 0, l = items.length; i < l; i++) {
+                result = Sizzle.matchesSelector(items[i], expr);
+                if (!result) break;
+            }
+            return result;
         }
 
         function dump () {
@@ -66,6 +77,7 @@
 
         return {
             dump: dump,
+            is  : is,
             show: show,
             hide: hide
         };
@@ -840,7 +852,7 @@
             PSEUDO: function( elem, match, i, array ) {
                 var name = match[1],
                     filter = Expr.filters[ name ];
-    
+console.log('name:' + name);
                 if ( filter ) {
                     return filter( elem, i, match, array );
     
