@@ -852,6 +852,7 @@
             PSEUDO: function( elem, match, i, array ) {
                 var name = match[1],
                     filter = Expr.filters[ name ];
+console.log('name:' + name);
                 if ( filter ) {
                     return filter( elem, i, match, array );
     
